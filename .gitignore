@@ -60,3 +60,10 @@ deploy/images/
 
 # DB
 *.db
+
+deploy/ollama-models/blobs/
+deploy/ollama-models/manifests/
+backend/uploads/
+backend/*.whl
+deploy/images/
+*.tar
