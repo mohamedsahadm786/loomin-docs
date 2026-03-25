@@ -1,0 +1,20 @@
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: loomin-ollama-dev
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_dev_data:/root/.ollama
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  ollama_dev_data:
+    driver: local
