@@ -35,6 +35,7 @@ class ChatRequest(BaseModel):
     document_id: Optional[str] = None
     model: Optional[str] = None
     document_content: Optional[str] = ""
+    skip_rag: bool = False
 
 
 class CitationItem(BaseModel):
@@ -85,7 +86,7 @@ async def chat(
 
     # 2. RAG retrieval
     trace_ctx.retrieval_start = time.perf_counter()
-    retrieved_chunks = rag.retrieve(sanitized_message, top_k=3)
+    retrieved_chunks = [] if request.skip_rag else rag.retrieve(sanitized_message, top_k=3)
     trace_ctx.retrieval_end = time.perf_counter()
 
     # 3. Build citations

@@ -108,6 +108,34 @@ def extract_text(file_path: str, file_type: str) -> str:
             logger.error("Text extraction failed for %s: %s", file_path, e)
             raise
 
+    elif file_type == "docx":
+        try:
+            import zipfile
+            import xml.etree.ElementTree as ET
+
+            # .docx files are ZIP archives containing XML
+            with zipfile.ZipFile(file_path, "r") as docx:
+                with docx.open("word/document.xml") as xml_file:
+                    tree = ET.parse(xml_file)
+                    root = tree.getroot()
+
+            # Extract all text from XML paragraph nodes
+            namespace = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
+            paragraphs = root.findall(".//w:p", namespace)
+            text_parts = []
+            for para in paragraphs:
+                texts = para.findall(".//w:t", namespace)
+                para_text = "".join(t.text or "" for t in texts)
+                if para_text.strip():
+                    text_parts.append(para_text)
+
+            text = "\n".join(text_parts)
+            logger.info("Extracted %d chars from docx: %s", len(text), file_path)
+            return text
+        except Exception as e:
+            logger.error("DOCX extraction failed for %s: %s", file_path, e)
+            raise
+
     else:
         raise ValueError(f"Unsupported file type: {file_type}")
 

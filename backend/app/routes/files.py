@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 UPLOAD_DIR = Path("./uploads")
-ALLOWED_EXTENSIONS = {".pdf", ".md", ".txt"}
+ALLOWED_EXTENSIONS = {".pdf", ".md", ".txt", ".docx"}
 
 
 def _ensure_upload_dir() -> None:
@@ -138,3 +138,40 @@ async def delete_file(filename: str) -> dict:
         "message": f"File '{filename}' deleted successfully.",
         "chunks_removed": removed_chunks,
     }
+
+@router.get("/{filename}/content")
+async def get_file_content(filename: str) -> dict:
+    """
+    Return the full extracted text content of an uploaded file.
+    Used by the frontend Document Viewer to show what was indexed.
+    """
+    _ensure_upload_dir()
+
+    # Find the file on disk (it has a UUID prefix)
+    matched = None
+    for f in UPLOAD_DIR.iterdir():
+        if f.is_file() and f.name.endswith(filename):
+            matched = f
+            break
+
+    if not matched:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"File not found: {filename}",
+        )
+
+    try:
+        suffix = Path(matched.name).suffix.lower().lstrip(".")
+        text = rag.extract_text(str(matched), suffix)
+        return {
+            "filename": filename,
+            "content": text,
+            "character_count": len(text),
+            "word_count": len(text.split()),
+        }
+    except Exception as e:
+        logger.error("Failed to extract content for %s: %s", filename, e)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to extract file content: {str(e)}",
+        )
