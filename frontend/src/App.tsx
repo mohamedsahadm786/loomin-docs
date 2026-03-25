@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Shield, Lock, Layers } from 'lucide-react'
+import { Shield, Lock } from 'lucide-react'
 import Editor from './components/Editor'
 import AISidebar from './components/AISidebar'
 import TokenMeter from './components/TokenMeter'

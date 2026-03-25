@@ -37,3 +37,26 @@ Thumbs.db
 faiss_index/
 
 models_cache/
+
+# ❌ Never commit these
+
+# Ollama models
+deploy/ollama-models/blobs/
+deploy/ollama-models/manifests/
+
+# Uploaded files
+backend/uploads/
+
+# Python cache
+backend/venv/
+backend/models_cache/
+
+# Torch wheels
+backend/*.whl
+
+# Docker images
+deploy/images/
+*.tar
+
+# DB
+*.db

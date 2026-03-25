@@ -1,14 +1,17 @@
 import axios from 'axios'
 
+// In development (npm run dev): Vite proxy forwards /api → localhost:8000
+// In Docker (nginx): nginx proxy forwards /api → backend:8000
+// This single baseURL works correctly in BOTH environments
 export const api = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: '/api',
   timeout: 600000,
 })
 
-// ── Health ──────────────────────────────────────────────────
+// ── Health ────────────────────────────────────────────────────
 export const getHealth = () => api.get('/health')
 
-// ── Documents ───────────────────────────────────────────────
+// ── Documents ─────────────────────────────────────────────────
 export const getDocuments = () => api.get('/documents')
 export const createDocument = (title: string, content: string) =>
   api.post('/documents', { title, content })
@@ -17,7 +20,7 @@ export const updateDocument = (id: number, data: { title?: string; content?: str
   api.put(`/documents/${id}`, data)
 export const deleteDocument = (id: number) => api.delete(`/documents/${id}`)
 
-// ── Files ────────────────────────────────────────────────────
+// ── Files ──────────────────────────────────────────────────────
 export const uploadFile = (file: File) => {
   const form = new FormData()
   form.append('file', file)
@@ -30,18 +33,19 @@ export const deleteFile = (filename: string) => api.delete(`/files/${filename}`)
 export const getFileContent = (filename: string) =>
   api.get(`/files/${encodeURIComponent(filename)}/content`)
 
-// ── Chat ─────────────────────────────────────────────────────
+// ── Chat ───────────────────────────────────────────────────────
 export const sendChat = (payload: {
   message: string
   document_id: string | null
   model: string
   document_content: string
+  skip_rag?: boolean
 }) => api.post('/chat', payload)
 
 export const getChatHistory = (documentId: number) =>
   api.get(`/chat/history/${documentId}`)
 
-// ── Tokens ───────────────────────────────────────────────────
+// ── Tokens ─────────────────────────────────────────────────────
 export const getTokenCount = (payload: {
   document_text: string
   retrieved_chunks: string

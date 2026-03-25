@@ -1,0 +1,14 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite
+faiss_index/
+models_cache/
+uploads/
+*.tar
+*.gguf
+node_modules/
+.env

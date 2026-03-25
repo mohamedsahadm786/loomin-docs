@@ -110,7 +110,7 @@ export default function FilesTab({ files, onFilesChanged, onImportToEditor }: Pr
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
 
         {/* Drop zone */}
-        <motion.div {...getRootProps()} whileHover={{ scale: 1.01 }}
+        <div {...getRootProps()}
           className="rounded-2xl p-7 text-center cursor-pointer transition-all duration-300"
           style={{
             border: isDragActive ? '2px solid #00d4ff' : '2px dashed rgba(0,212,255,0.25)',
@@ -135,7 +135,7 @@ export default function FilesTab({ files, onFilesChanged, onImportToEditor }: Pr
               </span>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Upload progress steps */}
         <AnimatePresence>

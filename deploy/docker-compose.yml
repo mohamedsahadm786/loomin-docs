@@ -1,0 +1,49 @@
+services:
+
+  # ── Frontend: React app served by nginx ──────────────────────────────────────
+  frontend:
+    image: loomin-frontend:latest
+    container_name: loomin-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # ── Backend: FastAPI application ──────────────────────────────────────────────
+  backend:
+    image: loomin-backend:latest
+    container_name: loomin-backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_DEFAULT_MODEL=llama3
+      - DATABASE_URL=sqlite+aiosqlite:////app/data/loomin.db
+      - FAISS_INDEX_PATH=/app/faiss_index
+      - EMBEDDING_MODEL=all-MiniLM-L6-v2
+      - SENTENCE_TRANSFORMERS_HOME=/app/models_cache
+      - BACKEND_PORT=8000
+    volumes:
+      - loomin-db:/app/data
+      - loomin-faiss:/app/faiss_index
+      - loomin-uploads:/app/uploads
+      - ./ollama-models/models_cache:/app/models_cache
+    restart: unless-stopped
+
+  # ── Ollama: Local LLM inference engine ───────────────────────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: loomin-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ollama-models:/root/.ollama
+    restart: unless-stopped
+
+volumes:
+  loomin-db:
+  loomin-faiss:
+  loomin-uploads:
