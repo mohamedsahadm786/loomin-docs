@@ -4,8 +4,8 @@ RUN apt-get update && apt-get install -y \
     libgomp1 build-essential curl \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 COPY requirements.txt .
-COPY torch-linux.whl .
-RUN pip install --no-cache-dir torch-linux.whl
+COPY torch-2.1.0+cpu-cp311-cp311-linux_x86_64.whl .
+RUN pip install --no-cache-dir torch-2.1.0+cpu-cp311-cp311-linux_x86_64.whl
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 ENV SENTENCE_TRANSFORMERS_HOME=/app/models_cache
