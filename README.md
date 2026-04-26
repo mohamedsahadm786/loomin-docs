@@ -1,7 +1,7 @@
 # Loomin-Docs 🔵
 ### AI-Powered Collaborative Document Editor — Air-Gapped Enterprise Deployment
 
-> **Built for CyberCore Technology Technical Assessment | Abu Dhabi, UAE**
+
 > Designed for zero-network, air-gapped RHEL 9 enterprise environments where
 > data sovereignty is non-negotiable.
 
